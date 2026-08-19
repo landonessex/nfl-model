@@ -134,7 +134,19 @@ class Config:
     min_edge_total: float = 0.020
     bankroll: float = 1000.0
 
+        # ---- Late-game clock control ----
+    # A team already leading late stops trying to score and starts running the
+    # clock, which is what locks a small lead in as the final margin. Without
+    # this every drive uses the same odds regardless of score or time left,
+    # and margins of 3 and 6 come out under-represented.
+    late_game_drives: int = 2      # how many of a team's final drives count as "late"
+    freeze_margins: tuple = (3, 6)     # exact leads worth protecting - field-goal-sized
+                                        # ones. A touchdown lead (7) is already slightly
+                                        # over-represented on its own, so it's left alone.
+    leading_freeze: float = 0.70   # fraction shaved off a leading team's late scoring odds
+
     seed: int | None = 20260909
+
 
 
 CFG = Config()
@@ -704,29 +716,62 @@ def _drive_rates(mu: float, drives: float, cfg: Config) -> tuple[float, float]:
     return float(td), float(fg)
 
 
-def _score_drives(n_sims, drives, td_rate, fg_rate, cfg, rng):
-    """Vectorised: for each sim, roll every possession and total the points."""
-    d = int(math.ceil(drives.max())) if isinstance(drives, np.ndarray) else int(math.ceil(drives))
-    u = rng.random((n_sims, d))
-    live = np.arange(d)[None, :] < np.asarray(drives).reshape(-1, 1)
+def _drive_round(pts, opp_pts, live, td_rate, fg_rate, cfg, rng, drives_left):
+    """
+    Resolve one possession for one team, across every simulation at once.
 
-    is_td = (u < td_rate) & live
-    is_fg = (u >= td_rate) & (u < td_rate + fg_rate) & live
-    is_saf = (u >= td_rate + fg_rate) & (u < td_rate + fg_rate + cfg.base_safety_rate) & live
+    pts / opp_pts: each team's running total entering this drive, shape (n_sims,).
+    live: which sims still have this drive at all (a team can run out of drives
+    before another team does, since drive counts are drawn independently).
+    drives_left: how many drives (including this one) the team has remaining -
+    the proxy for "how much of the game is left," since the engine doesn't
+    track a literal game clock.
 
-    n_td = is_td.sum(axis=1)
-    pts = n_td * 6 + is_fg.sum(axis=1) * 3 + is_saf.sum(axis=1) * 2
+    A team already leading late stops trying to score and starts trying not to
+    give the ball back: kneel-downs, clock-killing runs, no more possessions
+    that risk anything. That's what locks a small late lead in as the final
+    margin instead of letting it keep drifting - and it's why 3 and 7 show up
+    as final margins far more than a smooth curve would predict.
+    """
+    n = len(pts)
+    margin = pts - opp_pts
+    late = drives_left <= cfg.late_game_drives
+    freeze = live & late & np.isin(margin, cfg.freeze_margins)
 
-    # Extra point / two point conversions, resolved per touchdown.
-    max_td = int(n_td.max()) if n_td.size and n_td.max() > 0 else 0
-    if max_td:
-        mask = np.arange(max_td)[None, :] < n_td[:, None]
-        go2 = rng.random((n_sims, max_td)) < cfg.two_point_attempt_rate
-        made2 = rng.random((n_sims, max_td)) < cfg.two_point_success
-        made1 = rng.random((n_sims, max_td)) < cfg.xp_success
-        extra = np.where(go2, np.where(made2, 2, 0), np.where(made1, 1, 0)) * mask
-        pts = pts + extra.sum(axis=1)
-    return pts.astype(int)
+    scale = np.where(freeze, 1.0 - cfg.leading_freeze, 1.0)
+    td_eff = td_rate * scale
+    fg_eff = fg_rate * scale
+
+    u = rng.random(n)
+    is_td = live & (u < td_eff)
+    is_fg = live & ~is_td & (u < td_eff + fg_eff)
+    is_saf = live & ~is_td & ~is_fg & (u < td_eff + fg_eff + cfg.base_safety_rate)
+
+    add = np.where(is_td, 6.0, np.where(is_fg, 3.0, np.where(is_saf, 2.0, 0.0)))
+
+    # Extra point / two-point try, resolved immediately for any touchdown.
+    go2 = is_td & (rng.random(n) < cfg.two_point_attempt_rate)
+    made2 = go2 & (rng.random(n) < cfg.two_point_success)
+    made1 = is_td & ~go2 & (rng.random(n) < cfg.xp_success)
+    add = add + np.where(made2, 2.0, np.where(made1, 1.0, 0.0))
+
+    return pts + add
+
+
+def _score_drives_game(n_sims, drives_h, drives_a, td_h_v, fg_h_v, td_a_v, fg_a_v, cfg, rng):
+    """
+    Both teams' full game, drive by drive, alternating possessions and tracking
+    the running score - what lets the late-drive field-goal lean above see the
+    actual game state instead of guessing blind.
+    """
+    hp = np.zeros(n_sims)
+    ap = np.zeros(n_sims)
+    max_d = int(max(drives_h.max(), drives_a.max()))
+    for i in range(max_d):
+        hp = _drive_round(hp, ap, i < drives_h, td_h_v, fg_h_v, cfg, rng, drives_h - i)
+        ap = _drive_round(ap, hp, i < drives_a, td_a_v, fg_a_v, cfg, rng, drives_a - i)
+    return hp.astype(int), ap.astype(int)
+
 
 
 def _overtime(home_pts, away_pts, td_h, fg_h, td_a, fg_a, cfg, rng, playoff=False):
@@ -774,20 +819,21 @@ def simulate_drives(mu_home: float, mu_away: float, cfg: Config = CFG,
     # shootout. This is what makes the two teams' scores correlated, which the
     # totals market cares about a great deal.
     env = np.exp(rng.normal(0, cfg.env_sigma, n))
-    drives = np.clip(np.round(rng.normal(cfg.drives_per_team * pace, cfg.drive_sd, n)), 7, 16)
+    drives_h = np.clip(np.round(rng.normal(cfg.drives_per_team * pace, cfg.drive_sd, n)), 7, 16).astype(int)
+    drives_a = np.clip(np.round(rng.normal(cfg.drives_per_team * pace, cfg.drive_sd, n)), 7, 16).astype(int)
 
     td_h, fg_h = _drive_rates(mu_home, cfg.drives_per_team * pace, cfg)
     td_a, fg_a = _drive_rates(mu_away, cfg.drives_per_team * pace, cfg)
 
     # env scales scoring efficiency up and down together
-    td_h_v = np.clip(td_h * env, 0.01, 0.75)[:, None]
-    fg_h_v = np.clip(fg_h * env ** 0.5, 0.01, 0.45)[:, None]
-    td_a_v = np.clip(td_a * env, 0.01, 0.75)[:, None]
-    fg_a_v = np.clip(fg_a * env ** 0.5, 0.01, 0.45)[:, None]
+    td_h_v = np.clip(td_h * env, 0.01, 0.75)
+    fg_h_v = np.clip(fg_h * env ** 0.5, 0.01, 0.45)
+    td_a_v = np.clip(td_a * env, 0.01, 0.75)
+    fg_a_v = np.clip(fg_a * env ** 0.5, 0.01, 0.45)
 
-    hp = _score_drives(n, drives, td_h_v, fg_h_v, cfg, rng)
-    ap = _score_drives(n, drives, td_a_v, fg_a_v, cfg, rng)
+    hp, ap = _score_drives_game(n, drives_h, drives_a, td_h_v, fg_h_v, td_a_v, fg_a_v, cfg, rng)
     return _overtime(hp, ap, td_h, fg_h, td_a, fg_a, cfg, rng, playoff)
+
 
 
 # ==============================================================================
