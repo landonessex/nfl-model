@@ -77,8 +77,9 @@ def build(games_csv=None, priors_csv=None, week=1, placeholder=False, slate_csv=
             "w_ratings", "w_boxscore", "market_blend_week1", "market_blend_floor",
             "market_blend_halflife_weeks", "kelly_fraction", "max_stake_pct",
             "min_edge_ml", "min_edge_spread", "min_edge_total", "bankroll",
-            "ot_length_drives",
+            "ot_length_drives", "late_game_drives", "freeze_margins", "leading_freeze",
         )},
+
         "empiricalMargin": M.EMPIRICAL_MARGIN_PCT,
         "slate": slate,
     }
