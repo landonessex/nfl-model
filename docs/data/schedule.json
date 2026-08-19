@@ -1,0 +1,1130 @@
+{
+ "generated": "2026-08-19",
+ "source": "pro-football-reference.com/years/2026/games.htm",
+ "weeks": {
+  "1": [
+   {
+    "away": "NE",
+    "home": "SEA"
+   },
+   {
+    "away": "SF",
+    "home": "LAR"
+   },
+   {
+    "away": "CHI",
+    "home": "CAR"
+   },
+   {
+    "away": "TB",
+    "home": "CIN"
+   },
+   {
+    "away": "BAL",
+    "home": "IND"
+   },
+   {
+    "away": "NO",
+    "home": "DET"
+   },
+   {
+    "away": "BUF",
+    "home": "HOU"
+   },
+   {
+    "away": "CLE",
+    "home": "JAX"
+   },
+   {
+    "away": "NYJ",
+    "home": "TEN"
+   },
+   {
+    "away": "ATL",
+    "home": "PIT"
+   },
+   {
+    "away": "GB",
+    "home": "MIN"
+   },
+   {
+    "away": "WAS",
+    "home": "PHI"
+   },
+   {
+    "away": "MIA",
+    "home": "LV"
+   },
+   {
+    "away": "ARI",
+    "home": "LAC"
+   },
+   {
+    "away": "DAL",
+    "home": "NYG"
+   },
+   {
+    "away": "DEN",
+    "home": "KC"
+   }
+  ],
+  "2": [
+   {
+    "away": "DET",
+    "home": "BUF"
+   },
+   {
+    "away": "CAR",
+    "home": "ATL"
+   },
+   {
+    "away": "MIN",
+    "home": "CHI"
+   },
+   {
+    "away": "CIN",
+    "home": "HOU"
+   },
+   {
+    "away": "PIT",
+    "home": "NE"
+   },
+   {
+    "away": "GB",
+    "home": "NYJ"
+   },
+   {
+    "away": "PHI",
+    "home": "TEN"
+   },
+   {
+    "away": "NO",
+    "home": "BAL"
+   },
+   {
+    "away": "CLE",
+    "home": "TB"
+   },
+   {
+    "away": "JAX",
+    "home": "DEN"
+   },
+   {
+    "away": "LV",
+    "home": "LAC"
+   },
+   {
+    "away": "SEA",
+    "home": "ARI"
+   },
+   {
+    "away": "WAS",
+    "home": "DAL"
+   },
+   {
+    "away": "MIA",
+    "home": "SF"
+   },
+   {
+    "away": "IND",
+    "home": "KC"
+   },
+   {
+    "away": "NYG",
+    "home": "LAR"
+   }
+  ],
+  "3": [
+   {
+    "away": "ATL",
+    "home": "GB"
+   },
+   {
+    "away": "LAC",
+    "home": "BUF"
+   },
+   {
+    "away": "CAR",
+    "home": "CLE"
+   },
+   {
+    "away": "HOU",
+    "home": "IND"
+   },
+   {
+    "away": "NYJ",
+    "home": "DET"
+   },
+   {
+    "away": "NE",
+    "home": "JAX"
+   },
+   {
+    "away": "KC",
+    "home": "MIA"
+   },
+   {
+    "away": "TEN",
+    "home": "NYG"
+   },
+   {
+    "away": "CIN",
+    "home": "PIT"
+   },
+   {
+    "away": "SEA",
+    "home": "WAS"
+   },
+   {
+    "away": "ARI",
+    "home": "SF"
+   },
+   {
+    "away": "MIN",
+    "home": "TB"
+   },
+   {
+    "away": "BAL",
+    "home": "DAL"
+   },
+   {
+    "away": "LV",
+    "home": "NO"
+   },
+   {
+    "away": "LAR",
+    "home": "DEN"
+   },
+   {
+    "away": "PHI",
+    "home": "CHI"
+   }
+  ],
+  "4": [
+   {
+    "away": "PIT",
+    "home": "CLE"
+   },
+   {
+    "away": "IND",
+    "home": "WAS"
+   },
+   {
+    "away": "NE",
+    "home": "BUF"
+   },
+   {
+    "away": "NYJ",
+    "home": "CHI"
+   },
+   {
+    "away": "JAX",
+    "home": "CIN"
+   },
+   {
+    "away": "DAL",
+    "home": "HOU"
+   },
+   {
+    "away": "ARI",
+    "home": "NYG"
+   },
+   {
+    "away": "LAR",
+    "home": "PHI"
+   },
+   {
+    "away": "TEN",
+    "home": "BAL"
+   },
+   {
+    "away": "GB",
+    "home": "TB"
+   },
+   {
+    "away": "MIA",
+    "home": "MIN"
+   },
+   {
+    "away": "KC",
+    "home": "LV"
+   },
+   {
+    "away": "LAC",
+    "home": "SEA"
+   },
+   {
+    "away": "DEN",
+    "home": "SF"
+   },
+   {
+    "away": "DET",
+    "home": "CAR"
+   },
+   {
+    "away": "ATL",
+    "home": "NO"
+   }
+  ],
+  "5": [
+   {
+    "away": "TB",
+    "home": "DAL"
+   },
+   {
+    "away": "PHI",
+    "home": "JAX"
+   },
+   {
+    "away": "CIN",
+    "home": "MIA"
+   },
+   {
+    "away": "MIN",
+    "home": "NO"
+   },
+   {
+    "away": "LV",
+    "home": "NE"
+   },
+   {
+    "away": "CLE",
+    "home": "NYJ"
+   },
+   {
+    "away": "HOU",
+    "home": "TEN"
+   },
+   {
+    "away": "IND",
+    "home": "PIT"
+   },
+   {
+    "away": "NYG",
+    "home": "WAS"
+   },
+   {
+    "away": "DEN",
+    "home": "LAC"
+   },
+   {
+    "away": "DET",
+    "home": "ARI"
+   },
+   {
+    "away": "CHI",
+    "home": "GB"
+   },
+   {
+    "away": "SF",
+    "home": "SEA"
+   },
+   {
+    "away": "BAL",
+    "home": "ATL"
+   },
+   {
+    "away": "BUF",
+    "home": "LAR"
+   }
+  ],
+  "6": [
+   {
+    "away": "SEA",
+    "home": "DEN"
+   },
+   {
+    "away": "HOU",
+    "home": "JAX"
+   },
+   {
+    "away": "CHI",
+    "home": "ATL"
+   },
+   {
+    "away": "BAL",
+    "home": "CLE"
+   },
+   {
+    "away": "TEN",
+    "home": "IND"
+   },
+   {
+    "away": "NYJ",
+    "home": "NE"
+   },
+   {
+    "away": "NO",
+    "home": "NYG"
+   },
+   {
+    "away": "CAR",
+    "home": "PHI"
+   },
+   {
+    "away": "PIT",
+    "home": "TB"
+   },
+   {
+    "away": "ARI",
+    "home": "LAR"
+   },
+   {
+    "away": "LAC",
+    "home": "KC"
+   },
+   {
+    "away": "BUF",
+    "home": "LV"
+   },
+   {
+    "away": "DAL",
+    "home": "GB"
+   },
+   {
+    "away": "WAS",
+    "home": "SF"
+   }
+  ],
+  "7": [
+   {
+    "away": "NE",
+    "home": "CHI"
+   },
+   {
+    "away": "PIT",
+    "home": "NO"
+   },
+   {
+    "away": "SF",
+    "home": "ATL"
+   },
+   {
+    "away": "TB",
+    "home": "CAR"
+   },
+   {
+    "away": "NYG",
+    "home": "HOU"
+   },
+   {
+    "away": "IND",
+    "home": "MIN"
+   },
+   {
+    "away": "MIA",
+    "home": "NYJ"
+   },
+   {
+    "away": "CLE",
+    "home": "TEN"
+   },
+   {
+    "away": "CIN",
+    "home": "BAL"
+   },
+   {
+    "away": "DEN",
+    "home": "ARI"
+   },
+   {
+    "away": "GB",
+    "home": "DET"
+   },
+   {
+    "away": "LAR",
+    "home": "LV"
+   },
+   {
+    "away": "KC",
+    "home": "SEA"
+   },
+   {
+    "away": "DAL",
+    "home": "PHI"
+   }
+  ],
+  "8": [
+   {
+    "away": "CAR",
+    "home": "GB"
+   },
+   {
+    "away": "BAL",
+    "home": "BUF"
+   },
+   {
+    "away": "TEN",
+    "home": "CIN"
+   },
+   {
+    "away": "ARI",
+    "home": "DAL"
+   },
+   {
+    "away": "MIN",
+    "home": "DET"
+   },
+   {
+    "away": "IND",
+    "home": "JAX"
+   },
+   {
+    "away": "LV",
+    "home": "NYJ"
+   },
+   {
+    "away": "CLE",
+    "home": "PIT"
+   },
+   {
+    "away": "ATL",
+    "home": "TB"
+   },
+   {
+    "away": "LAC",
+    "home": "LAR"
+   },
+   {
+    "away": "KC",
+    "home": "DEN"
+   },
+   {
+    "away": "NE",
+    "home": "MIA"
+   },
+   {
+    "away": "PHI",
+    "home": "WAS"
+   },
+   {
+    "away": "CHI",
+    "home": "SEA"
+   }
+  ],
+  "9": [
+   {
+    "away": "JAX",
+    "home": "BAL"
+   },
+   {
+    "away": "CIN",
+    "home": "ATL"
+   },
+   {
+    "away": "DEN",
+    "home": "CAR"
+   },
+   {
+    "away": "DAL",
+    "home": "IND"
+   },
+   {
+    "away": "NYJ",
+    "home": "KC"
+   },
+   {
+    "away": "DET",
+    "home": "MIA"
+   },
+   {
+    "away": "CLE",
+    "home": "NO"
+   },
+   {
+    "away": "NYG",
+    "home": "PHI"
+   },
+   {
+    "away": "LAR",
+    "home": "WAS"
+   },
+   {
+    "away": "HOU",
+    "home": "LAC"
+   },
+   {
+    "away": "LV",
+    "home": "SF"
+   },
+   {
+    "away": "GB",
+    "home": "NE"
+   },
+   {
+    "away": "ARI",
+    "home": "SEA"
+   },
+   {
+    "away": "TB",
+    "home": "CHI"
+   },
+   {
+    "away": "BUF",
+    "home": "MIN"
+   }
+  ],
+  "10": [
+   {
+    "away": "WAS",
+    "home": "NYG"
+   },
+   {
+    "away": "NE",
+    "home": "DET"
+   },
+   {
+    "away": "KC",
+    "home": "ATL"
+   },
+   {
+    "away": "HOU",
+    "home": "CLE"
+   },
+   {
+    "away": "MIA",
+    "home": "IND"
+   },
+   {
+    "away": "MIN",
+    "home": "GB"
+   },
+   {
+    "away": "CAR",
+    "home": "NO"
+   },
+   {
+    "away": "BUF",
+    "home": "NYJ"
+   },
+   {
+    "away": "JAX",
+    "home": "TEN"
+   },
+   {
+    "away": "LAR",
+    "home": "ARI"
+   },
+   {
+    "away": "SEA",
+    "home": "LV"
+   },
+   {
+    "away": "SF",
+    "home": "DAL"
+   },
+   {
+    "away": "PIT",
+    "home": "CIN"
+   },
+   {
+    "away": "LAC",
+    "home": "BAL"
+   }
+  ],
+  "11": [
+   {
+    "away": "IND",
+    "home": "HOU"
+   },
+   {
+    "away": "MIA",
+    "home": "BUF"
+   },
+   {
+    "away": "BAL",
+    "home": "CAR"
+   },
+   {
+    "away": "NO",
+    "home": "CHI"
+   },
+   {
+    "away": "TEN",
+    "home": "DAL"
+   },
+   {
+    "away": "TB",
+    "home": "DET"
+   },
+   {
+    "away": "ARI",
+    "home": "KC"
+   },
+   {
+    "away": "JAX",
+    "home": "NYG"
+   },
+   {
+    "away": "NYJ",
+    "home": "LAC"
+   },
+   {
+    "away": "LV",
+    "home": "DEN"
+   },
+   {
+    "away": "PIT",
+    "home": "PHI"
+   },
+   {
+    "away": "MIN",
+    "home": "SF"
+   },
+   {
+    "away": "CIN",
+    "home": "WAS"
+   }
+  ],
+  "12": [
+   {
+    "away": "GB",
+    "home": "LAR"
+   },
+   {
+    "away": "CHI",
+    "home": "DET"
+   },
+   {
+    "away": "PHI",
+    "home": "DAL"
+   },
+   {
+    "away": "KC",
+    "home": "BUF"
+   },
+   {
+    "away": "DEN",
+    "home": "PIT"
+   },
+   {
+    "away": "NO",
+    "home": "CIN"
+   },
+   {
+    "away": "LV",
+    "home": "CLE"
+   },
+   {
+    "away": "NYG",
+    "home": "IND"
+   },
+   {
+    "away": "BAL",
+    "home": "HOU"
+   },
+   {
+    "away": "NYJ",
+    "home": "MIA"
+   },
+   {
+    "away": "ATL",
+    "home": "MIN"
+   },
+   {
+    "away": "TEN",
+    "home": "JAX"
+   },
+   {
+    "away": "WAS",
+    "home": "ARI"
+   },
+   {
+    "away": "SEA",
+    "home": "SF"
+   },
+   {
+    "away": "NE",
+    "home": "LAC"
+   },
+   {
+    "away": "CAR",
+    "home": "TB"
+   }
+  ],
+  "13": [
+   {
+    "away": "KC",
+    "home": "LAR"
+   },
+   {
+    "away": "DET",
+    "home": "ATL"
+   },
+   {
+    "away": "JAX",
+    "home": "CHI"
+   },
+   {
+    "away": "CIN",
+    "home": "CLE"
+   },
+   {
+    "away": "GB",
+    "home": "NO"
+   },
+   {
+    "away": "SF",
+    "home": "NYG"
+   },
+   {
+    "away": "WAS",
+    "home": "TEN"
+   },
+   {
+    "away": "LAC",
+    "home": "TB"
+   },
+   {
+    "away": "PHI",
+    "home": "ARI"
+   },
+   {
+    "away": "MIA",
+    "home": "DEN"
+   },
+   {
+    "away": "CAR",
+    "home": "MIN"
+   },
+   {
+    "away": "BUF",
+    "home": "NE"
+   },
+   {
+    "away": "HOU",
+    "home": "PIT"
+   },
+   {
+    "away": "DAL",
+    "home": "SEA"
+   }
+  ],
+  "14": [
+   {
+    "away": "MIN",
+    "home": "NE"
+   },
+   {
+    "away": "NO",
+    "home": "CAR"
+   },
+   {
+    "away": "ATL",
+    "home": "CLE"
+   },
+   {
+    "away": "TEN",
+    "home": "DET"
+   },
+   {
+    "away": "CHI",
+    "home": "MIA"
+   },
+   {
+    "away": "DEN",
+    "home": "NYJ"
+   },
+   {
+    "away": "IND",
+    "home": "PHI"
+   },
+   {
+    "away": "TB",
+    "home": "BAL"
+   },
+   {
+    "away": "HOU",
+    "home": "WAS"
+   },
+   {
+    "away": "LAC",
+    "home": "LV"
+   },
+   {
+    "away": "KC",
+    "home": "CIN"
+   },
+   {
+    "away": "NYG",
+    "home": "SEA"
+   },
+   {
+    "away": "LAR",
+    "home": "SF"
+   },
+   {
+    "away": "BUF",
+    "home": "GB"
+   },
+   {
+    "away": "PIT",
+    "home": "JAX"
+   }
+  ],
+  "15": [
+   {
+    "away": "SF",
+    "home": "LAC"
+   },
+   {
+    "away": "SEA",
+    "home": "PHI"
+   },
+   {
+    "away": "CHI",
+    "home": "BUF"
+   },
+   {
+    "away": "CIN",
+    "home": "CAR"
+   },
+   {
+    "away": "MIA",
+    "home": "GB"
+   },
+   {
+    "away": "JAX",
+    "home": "HOU"
+   },
+   {
+    "away": "CLE",
+    "home": "NYG"
+   },
+   {
+    "away": "IND",
+    "home": "TEN"
+   },
+   {
+    "away": "BAL",
+    "home": "PIT"
+   },
+   {
+    "away": "NO",
+    "home": "TB"
+   },
+   {
+    "away": "ATL",
+    "home": "WAS"
+   },
+   {
+    "away": "NYJ",
+    "home": "ARI"
+   },
+   {
+    "away": "DEN",
+    "home": "LV"
+   },
+   {
+    "away": "DAL",
+    "home": "LAR"
+   },
+   {
+    "away": "DET",
+    "home": "MIN"
+   },
+   {
+    "away": "NE",
+    "home": "KC"
+   }
+  ],
+  "16": [
+   {
+    "away": "HOU",
+    "home": "PHI"
+   },
+   {
+    "away": "GB",
+    "home": "CHI"
+   },
+   {
+    "away": "BUF",
+    "home": "DEN"
+   },
+   {
+    "away": "LAR",
+    "home": "SEA"
+   },
+   {
+    "away": "TB",
+    "home": "ATL"
+   },
+   {
+    "away": "CIN",
+    "home": "IND"
+   },
+   {
+    "away": "LAC",
+    "home": "MIA"
+   },
+   {
+    "away": "WAS",
+    "home": "MIN"
+   },
+   {
+    "away": "ARI",
+    "home": "NO"
+   },
+   {
+    "away": "NE",
+    "home": "NYJ"
+   },
+   {
+    "away": "CAR",
+    "home": "PIT"
+   },
+   {
+    "away": "CLE",
+    "home": "BAL"
+   },
+   {
+    "away": "TEN",
+    "home": "LV"
+   },
+   {
+    "away": "SF",
+    "home": "KC"
+   },
+   {
+    "away": "JAX",
+    "home": "DAL"
+   },
+   {
+    "away": "NYG",
+    "home": "DET"
+   }
+  ],
+  "17": [
+   {
+    "away": "BAL",
+    "home": "CIN"
+   },
+   {
+    "away": "NO",
+    "home": "ATL"
+   },
+   {
+    "away": "SEA",
+    "home": "CAR"
+   },
+   {
+    "away": "IND",
+    "home": "CLE"
+   },
+   {
+    "away": "NYG",
+    "home": "DAL"
+   },
+   {
+    "away": "WAS",
+    "home": "JAX"
+   },
+   {
+    "away": "BUF",
+    "home": "MIA"
+   },
+   {
+    "away": "DEN",
+    "home": "NE"
+   },
+   {
+    "away": "MIN",
+    "home": "NYJ"
+   },
+   {
+    "away": "PIT",
+    "home": "TEN"
+   },
+   {
+    "away": "KC",
+    "home": "LAC"
+   },
+   {
+    "away": "LAR",
+    "home": "TB"
+   },
+   {
+    "away": "LV",
+    "home": "ARI"
+   },
+   {
+    "away": "DET",
+    "home": "CHI"
+   },
+   {
+    "away": "PHI",
+    "home": "SF"
+   },
+   {
+    "away": "HOU",
+    "home": "GB"
+   }
+  ],
+  "18": [
+   {
+    "away": "NYJ",
+    "home": "BUF"
+   },
+   {
+    "away": "ATL",
+    "home": "CAR"
+   },
+   {
+    "away": "CLE",
+    "home": "CIN"
+   },
+   {
+    "away": "JAX",
+    "home": "IND"
+   },
+   {
+    "away": "SF",
+    "home": "ARI"
+   },
+   {
+    "away": "LAC",
+    "home": "DEN"
+   },
+   {
+    "away": "DET",
+    "home": "GB"
+   },
+   {
+    "away": "TEN",
+    "home": "HOU"
+   },
+   {
+    "away": "LV",
+    "home": "KC"
+   },
+   {
+    "away": "CHI",
+    "home": "MIN"
+   },
+   {
+    "away": "TB",
+    "home": "NO"
+   },
+   {
+    "away": "MIA",
+    "home": "NE"
+   },
+   {
+    "away": "PHI",
+    "home": "NYG"
+   },
+   {
+    "away": "SEA",
+    "home": "LAR"
+   },
+   {
+    "away": "PIT",
+    "home": "BAL"
+   },
+   {
+    "away": "DAL",
+    "home": "WAS"
+   }
+  ]
+ }
+}

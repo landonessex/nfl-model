@@ -1,0 +1,103 @@
+/* Pick'em page — extends styles.css */
+
+.back{color:var(--dimmer);text-decoration:none;border-bottom:1px solid var(--edge)}
+.back:hover{color:var(--chalk)}
+
+.weekbar{
+  display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-bottom:14px;
+  font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--dimmer);
+}
+.weekbar select{width:auto;padding:9px 12px}
+.weekbar button{padding:9px 16px}
+.weeknote{text-transform:none;letter-spacing:0;font-size:12px}
+
+textarea{
+  width:100%;background:var(--panel);color:var(--chalk);
+  border:1px solid var(--edge);border-radius:5px;padding:14px;
+  font-family:"IBM Plex Mono",monospace;font-size:15px;line-height:1.7;
+  resize:vertical;
+}
+textarea:focus-visible{outline:2px solid var(--brass);outline-offset:2px}
+textarea::placeholder{color:#4a5a6b}
+
+.hint-block{
+  font-size:14px;color:var(--dimmer);margin:12px 0 0;max-width:66ch;line-height:1.65;
+}
+.hint-block code,.footnote code{
+  font-family:"IBM Plex Mono",monospace;font-size:13px;
+  background:rgba(110,147,196,.12);padding:2px 6px;border-radius:3px;color:var(--chalk);
+}
+
+.actions{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin-top:18px}
+button{
+  font-family:"IBM Plex Mono",monospace;font-size:13px;letter-spacing:.08em;
+  text-transform:uppercase;padding:12px 22px;border-radius:4px;cursor:pointer;
+  border:1px solid var(--edge);background:var(--panel);color:var(--chalk);
+}
+button:hover{border-color:var(--dim)}
+button:focus-visible{outline:2px solid var(--brass);outline-offset:2px}
+button.primary{background:var(--brass);color:#181206;border-color:var(--brass);font-weight:600}
+button.primary:hover{filter:brightness(1.08)}
+.status{font-family:"IBM Plex Mono",monospace;font-size:12px;color:var(--dimmer)}
+.err{
+  font-family:"IBM Plex Mono",monospace;font-size:13px;color:var(--flag);
+  margin:14px 0 0;white-space:pre-wrap;
+}
+
+/* ---- the card ---- */
+.card{list-style:none;margin:0;padding:0;border-top:1px solid var(--edge)}
+.card li{
+  display:grid;grid-template-columns:auto 1fr auto;gap:14px;align-items:center;
+  padding:14px 4px;border-bottom:1px solid rgba(42,57,71,.6);
+}
+.card li.dev{background:rgba(224,163,60,.07);border-left:3px solid var(--brass);padding-left:12px}
+.pickname{
+  font-family:Archivo,sans-serif;font-weight:700;font-size:20px;letter-spacing:-.01em;
+  min-width:62px;
+}
+.card li.dev .pickname{color:var(--brass)}
+.meta{font-family:"IBM Plex Mono",monospace;font-size:12px;color:var(--dimmer);line-height:1.5}
+.meta b{color:var(--dim);font-weight:500}
+.lev{
+  font-family:"IBM Plex Mono",monospace;font-size:13px;text-align:right;
+  font-variant-numeric:tabular-nums;white-space:nowrap;
+}
+.lev.up{color:var(--turf)}
+.lev.down{color:var(--dimmer)}
+.flagword{
+  display:block;font-size:10px;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--brass);margin-top:3px;
+}
+
+.devpick{
+  display:flex;align-items:center;gap:9px;margin-left:auto;
+  font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--dimmer);
+}
+.devpick select{width:auto;padding:9px 10px}
+
+#frontier tbody tr.best td{background:rgba(224,163,60,.1);color:var(--chalk)}
+#frontier tbody tr.best td:first-child::after{content:" ◂ best";color:var(--brass);font-size:10px}
+
+details summary{cursor:pointer;list-style:none}
+details summary::-webkit-details-marker{display:none}
+.as-summary{margin-bottom:0}
+.as-summary::after{content:" ▸";color:var(--dimmer)}
+details[open] .as-summary::after{content:" ▾"}
+details[open] .as-summary{margin-bottom:20px}
+.badge{
+  font-family:"IBM Plex Mono",monospace;font-size:10px;letter-spacing:.1em;
+  color:var(--brass);text-transform:none;
+}
+.calib-out{
+  font-family:"IBM Plex Mono",monospace;font-size:13px;color:var(--dim);
+  margin-top:18px;line-height:1.8;
+}
+.calib-out strong{color:var(--chalk);font-weight:600}
+
+@media (max-width:640px){
+  .card li{grid-template-columns:auto 1fr;row-gap:6px}
+  .lev{grid-column:2;text-align:left}
+  .devpick{margin-left:0;width:100%}
+}

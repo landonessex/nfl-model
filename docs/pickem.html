@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pick'em — NFL Model 2026</title>
+<meta name="description" content="Which games to pick against the field in a large pick'em pool.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;800&family=IBM+Plex+Mono:wght@400;500;600&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="pickem.css">
+</head>
+<body>
+
+<div id="stale" class="stale" hidden>
+  <strong>Placeholder ratings.</strong> Picks will still work — they'll lean on the spreads
+  you paste rather than the model. Load real data to get both.
+</div>
+
+<header class="masthead">
+  <div class="wrap">
+    <p class="eyebrow"><a href="index.html" class="back">← Game model</a> · <span id="genDate">—</span></p>
+    <h1>Chalk finishes<br><em>last.</em></h1>
+    <p class="standfirst">In a 150-person pool, thirty people submit the same card as you and split
+    the prize. Games where everyone agrees can't move you up the table, whichever way they land.
+    Only the ones you pick differently can.</p>
+  </div>
+</header>
+
+<main class="wrap">
+
+<!-- ============ INPUT ============ -->
+<section class="panel">
+  <div class="panel-label">This week's slate</div>
+  <div class="weekbar" id="weekBar" hidden>
+    <label for="weekSel">Week</label>
+    <select id="weekSel"></select>
+    <button id="loadWeek" class="ghost">Fill matchups</button>
+    <span class="weeknote">then just type the spreads</span>
+  </div>
+  <textarea id="slateBox" rows="9" spellcheck="false"
+    placeholder="BUF @ KC -2.5&#10;SEA @ SF -3&#10;DAL @ PHI -6.5&#10;CIN @ BAL -4.5&#10;GB @ DET -3.5"></textarea>
+  <p class="hint-block">
+    Type a point spread (<code>-2.5</code>) or a moneyline (<code>-140</code>) — whichever the
+    book shows you first, both from the home team's side. A moneyline skips a rounding step and
+    is the more precise of the two, so prefer it when you have it. Drop the number entirely and
+    a game uses the ratings alone. There's no spot for the total — it doesn't change who's
+    favoured to win, so it can't change a straight pick'em card either. Know the field's actual
+    pick rate? Add it last: <code>BUF @ KC -2.5 29</code> or <code>BUF @ KC -140 29</code>.
+  </p>
+  <div class="actions">
+    <button id="build" class="primary">Build my card</button>
+    <button id="clear" class="ghost">Clear</button>
+    <span id="status" class="status"></span>
+  </div>
+  <p id="parseErr" class="err" hidden></p>
+</section>
+
+<!-- ============ CARD ============ -->
+<section class="panel" id="cardPanel" hidden>
+  <div class="panel-label">Your card — <span id="devCount">0</span> against the field</div>
+  <ol class="card" id="card"></ol>
+  <div class="actions">
+    <button id="copy" class="ghost">Copy picks</button>
+    <label class="devpick">Contrarian picks
+      <select id="devSel"></select>
+    </label>
+  </div>
+</section>
+
+<!-- ============ FRONTIER ============ -->
+<section class="panel" id="frontPanel" hidden>
+  <div class="panel-label">What each level of boldness buys</div>
+  <div class="tablewrap">
+    <table id="frontier">
+      <thead><tr><th>Against field</th><th>Exp. correct</th><th>P(win week)</th><th>P(win season)</th><th>Expected $</th></tr></thead>
+      <tbody></tbody>
+    </table>
+  </div>
+  <p class="footnote" id="frontNote"></p>
+</section>
+
+<!-- ============ SETTINGS ============ -->
+<section class="panel">
+  <details id="settings">
+    <summary class="panel-label as-summary">Pool settings — set once</summary>
+    <div class="grid inputs">
+      <label>Entrants<input type="number" id="entrants" value="150" min="2"></label>
+      <label>Weeks left<input type="number" id="weeksLeft" value="18" min="1" max="22"></label>
+      <label>Weekly prize<input type="number" id="wPrize" value="50" min="0"></label>
+      <label>Season prize<input type="number" id="sPrize" value="500" min="0"></label>
+    </div>
+    <p class="footnote">Prizes are how the two objectives get compared. A weekly win and a season
+    win aren't the same unit, and no abstract weighting makes them one — money does. Raise the
+    season prize and it recommends a chalkier card.</p>
+  </details>
+</section>
+
+<!-- ============ CALIBRATION ============ -->
+<section class="panel">
+  <details id="calib">
+    <summary class="panel-label as-summary">Teach it your pool <span id="calibBadge" class="badge"></span></summary>
+    <p class="footnote top">After the deadline, when everyone's picks are visible, paste what share
+    of the pool took each home team. Same format as the slate, with the percentage on the end.
+    This is the highest-value fifteen minutes of your week — it replaces a national average with
+    how your actual 150 people behave.</p>
+    <textarea id="histBox" rows="6" spellcheck="false"
+      placeholder="BUF @ KC -2.5 71&#10;DAL @ PHI -6.5 79&#10;TEN @ NE -9.5 93"></textarea>
+    <div class="actions">
+      <button id="addHist" class="ghost">Add to history</button>
+      <button id="resetHist" class="ghost">Reset history</button>
+    </div>
+    <div id="calibOut" class="calib-out"></div>
+  </details>
+</section>
+
+<section class="panel prose">
+  <div class="panel-label">Why underdogs</div>
+  <p>The public picks favourites more often than favourites win, and the gap widens with the spread.
+  A 3-point favourite wins about 58% of the time and draws about 67% of picks. A 7-point favourite
+  wins about 70% and draws about 85%. That gap is systematic, and it means the contrarian value in
+  a pick'em pool sits almost entirely on underdogs — usually mid-sized ones, around a touchdown,
+  rather than the near coin flips.</p>
+  <h2>Don't chase last Sunday</h2>
+  <p>Three underdogs at 40% each miss all three about 22% of the time. That will happen to you four
+  times this season, and it isn't evidence the strategy is wrong. The trap in the other direction is
+  worse: after a contrarian week hits, taking six deviations the next week. The table above already
+  says six is worse than three.</p>
+</section>
+
+<footer class="wrap">
+  <p>Everything on this page runs in your browser. Your slate, settings and pool history are stored
+  on this device only. For research and entertainment.</p>
+</footer>
+
+</main>
+<script src="pickem.js"></script>
+</body>
+</html>

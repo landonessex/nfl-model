@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NFL Model — 2026</title>
+<meta name="description" content="Opponent-adjusted power ratings and a possession-level Monte Carlo, run live in the browser.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;800&family=IBM+Plex+Mono:wght@400;500;600&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="pickem.css">
+</head>
+<body>
+
+<div id="stale" class="stale" hidden>
+  <strong>Placeholder ratings.</strong> These are synthetic numbers so the page has something to draw.
+  Commit a <code>data/games.csv</code> and the weekly job will replace them.
+</div>
+
+<header class="masthead">
+  <div class="wrap">
+    <p class="eyebrow"><a href="pickem.html" class="back">Pick'em pool →</a> · <span id="genDate">—</span> · <span id="gameCount">—</span> games in the fit</p>
+    <h1>The margin is not a<br><em>smooth curve.</em></h1>
+    <p class="standfirst">Football scores in threes and sevens. Every simulation below counts touchdowns
+    and field goals one possession at a time, which is the only way to price the half-point either
+    side of a key number.</p>
+  </div>
+</header>
+
+<main class="wrap">
+
+<!-- ============ MATCHUP ============ -->
+<section class="panel" id="matchup">
+  <div class="panel-label">Matchup</div>
+
+  <div class="teams">
+    <div class="team away">
+      <label for="awaySel">Away</label>
+      <select id="awaySel"></select>
+      <div class="score" id="awayScore">—</div>
+      <div class="power" id="awayPower">—</div>
+    </div>
+    <div class="at">at</div>
+    <div class="team home">
+      <label for="homeSel">Home</label>
+      <select id="homeSel"></select>
+      <div class="score" id="homeScore">—</div>
+      <div class="power" id="homePower">—</div>
+    </div>
+  </div>
+
+  <div class="lines">
+    <div class="line-cell">
+      <span class="cap">Model line</span>
+      <strong id="modelLine" class="model">—</strong>
+    </div>
+    <div class="line-cell">
+      <span class="cap">Market line</span>
+      <strong id="marketLineOut" class="market">—</strong>
+    </div>
+    <div class="line-cell">
+      <span class="cap">Model total</span>
+      <strong id="modelTotal" class="model">—</strong>
+    </div>
+    <div class="line-cell">
+      <span class="cap">Market total</span>
+      <strong id="marketTotalOut" class="market">—</strong>
+    </div>
+  </div>
+</section>
+
+<!-- ============ HISTOGRAM ============ -->
+<section class="panel chart-panel">
+  <div class="panel-label">Final margin, <span id="simCount">0</span> simulations</div>
+  <canvas id="hist" width="1200" height="360" aria-label="Distribution of simulated final margins"></canvas>
+  <p class="chart-note">
+    Hash marks sit on 3 and 7. <span class="model">Amber</span> bars are margins where the home team wins.
+    The dotted rule is the market's spread — bars to its left are home covers.
+  </p>
+  <div class="keytable" id="keyTable"></div>
+</section>
+
+<!-- ============ INPUTS ============ -->
+<section class="panel">
+  <div class="panel-label">The book's prices</div>
+  <div class="grid inputs">
+    <label>Spread <span class="hint">home side</span><input type="number" id="spread" step="0.5" value="-2.5"></label>
+    <label>Spread price H<input type="number" id="spH" step="5" value="-110"></label>
+    <label>Spread price A<input type="number" id="spA" step="5" value="-110"></label>
+    <label>Total<input type="number" id="total" step="0.5" value="45.5"></label>
+    <label>Over<input type="number" id="ovP" step="5" value="-110"></label>
+    <label>Under<input type="number" id="unP" step="5" value="-110"></label>
+    <label>Moneyline H<input type="number" id="mlH" step="5" value="-140"></label>
+    <label>Moneyline A<input type="number" id="mlA" step="5" value="120"></label>
+    <label>Bankroll<input type="number" id="bank" step="50" value="1000"></label>
+  </div>
+  <div class="grid toggles">
+    <label>Week<input type="number" id="week" min="1" max="22" value="1"></label>
+    <label>Home rest
+      <select id="restH"><option value="normal">Normal</option><option value="bye">Off a bye</option><option value="short">Short week</option></select>
+    </label>
+    <label>Away rest
+      <select id="restA"><option value="normal">Normal</option><option value="bye">Off a bye</option><option value="short">Short week</option></select>
+    </label>
+    <label class="check"><input type="checkbox" id="neutral"> Neutral site</label>
+    <label class="check"><input type="checkbox" id="useMarket" checked> Blend toward the market
+      <span class="hint" id="blendPct"></span></label>
+  </div>
+</section>
+
+<!-- ============ PRICING ============ -->
+<section class="panel">
+  <div class="panel-label">Where the model disagrees</div>
+  <div class="tablewrap">
+    <table id="priceTable">
+      <thead><tr>
+        <th>Market</th><th>Price</th><th>No-vig</th><th>Model</th><th>Edge</th><th>EV</th><th>Stake</th><th></th>
+      </tr></thead>
+      <tbody></tbody>
+    </table>
+  </div>
+  <p class="footnote">Stakes are quarter-Kelly, capped at 2% of bankroll, and only fire once the edge
+  clears the threshold. Most weeks nothing fires. A model that finds eight bets on a thirteen-game
+  slate isn't sharp, it's broken.</p>
+</section>
+
+<!-- ============ RATINGS ============ -->
+<section class="panel">
+  <div class="panel-label">Power ratings</div>
+  <p class="footnote top">Points better than a league-average team on a neutral field, adjusted for
+  who each team has actually played. A matchup line is roughly the difference between two of these,
+  plus home field.</p>
+  <div class="tablewrap">
+    <table id="ratingsTable">
+      <thead><tr><th>#</th><th>Team</th><th>Power</th><th>Attack</th><th>Defense</th><th>Off pts</th><th>Def pts</th><th>GP</th></tr></thead>
+      <tbody></tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ============ METHOD ============ -->
+<section class="panel prose">
+  <div class="panel-label">How it works</div>
+
+  <h2>Ratings are solved, not averaged</h2>
+  <p>Dividing points scored by the league average is readable and it's wrong by Week 6, because a team
+  that drew the four worst defences in football looks like a juggernaut. Attack and defense here are
+  solved against each other, iterating until they settle, so a rating means what a team would do
+  against an average opponent — the only version that transfers to next week.</p>
+
+  <h2>Two estimates, blended</h2>
+  <p>The ratings give one expected score. A ridge regression on four box-score statistics — passing
+  yards, rushing yards, takeaways, giveaways — gives a second, built from different information. They
+  blend 55/45. When they disagree sharply, that game is worth looking at by hand rather than betting.</p>
+
+  <h2>The market gets a vote early</h2>
+  <p>In Week 1 there is no 2026 data and the market has every roster move priced. The model starts at
+  75% market weight and decays toward 25% as its own sample builds. This feels like cheating. It is
+  the single most valuable rule in the file.</p>
+
+  <h2>Everything runs in your browser</h2>
+  <p>GitHub Pages serves static files and nothing else, so there is no server doing the maths. The
+  ratings are fitted by a scheduled job and committed as JSON; the twenty thousand simulations behind
+  every number on this page run locally when you change a dropdown. Nothing you type is sent anywhere.</p>
+</section>
+
+<footer class="wrap">
+  <p>For research and entertainment. No model reliably beats a sharp closing line. Bet only what you
+  can afford to lose, if at all.</p>
+</footer>
+
+</main>
+<script src="app.js"></script>
+</body>
+</html>
