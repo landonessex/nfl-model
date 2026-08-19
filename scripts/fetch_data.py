@@ -21,21 +21,45 @@ import pandas as pd
 
 
 def load_pbp(years):
-    """Try the current package, then the older one."""
-    try:
-        import nflreadpy as nfl
-        return nfl.load_pbp(seasons=years).to_pandas()
-    except Exception as e1:
+    """
+    Fetch one season at a time and skip whichever the installed library
+    rejects, instead of one batched call that dies if ANY season is invalid.
+
+    This matters specifically for the season that hasn't started yet: nflverse
+    packages cap their allowed season range and only extend it once games are
+    underway (sometimes not until Week 1 has actually been played), so asking
+    for the current year alongside past years can take the whole request down
+    even though the past years are perfectly fetchable. A plain `pip install`
+    picks up whatever the library's latest allowed range is on each run, so
+    this self-heals once the season starts - no code change needed later.
+    """
+    frames, skipped = [], []
+    for yr in years:
+        got = None
         try:
-            import nfl_data_py as nfl
-            return nfl.import_pbp_data(years, downcast=True)
-        except Exception as e2:
-            sys.exit(
-                "Could not load play-by-play data.\n"
-                f"  nflreadpy:   {e1}\n"
-                f"  nfl_data_py: {e2}\n"
-                "Install one of them, or drop a hand-built games.csv into data/."
-            )
+            import nflreadpy as nfl
+            got = nfl.load_pbp(seasons=[yr]).to_pandas()
+        except Exception as e1:
+            try:
+                import nfl_data_py as nfl
+                got = nfl.import_pbp_data([yr], downcast=True)
+            except Exception as e2:
+                skipped.append((yr, f"nflreadpy: {e1} | nfl_data_py: {e2}"))
+                continue
+        if got is not None and len(got):
+            frames.append(got)
+        else:
+            skipped.append((yr, "no rows returned"))
+
+    for yr, reason in skipped:
+        print(f"  skipping {yr}: {reason}")
+
+    if not frames:
+        sys.exit(
+            "Could not load play-by-play data for any requested season.\n"
+            "Install nflreadpy or nfl_data_py, or drop a hand-built games.csv into data/."
+        )
+    return pd.concat(frames, ignore_index=True)
 
 
 def build(years) -> pd.DataFrame:
