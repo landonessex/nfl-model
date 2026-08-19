@@ -56,7 +56,7 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add docs/data/model.json docs/data/schedule.json
           [ -f data/games.csv ] && git add data/games.csv
-                    git diff --quiet --cached || git commit -m "Refit model $(date -u +%Y-%m-%d)"
+          git diff --quiet --cached || git commit -m "Refit model $(date -u +%Y-%m-%d)"
           git pull --rebase origin main
           git push
 
