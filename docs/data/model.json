@@ -1,5 +1,5 @@
 {
- "generated": "2026-08-19 17:09 UTC",
+ "generated": "2026-08-19 17:54 UTC",
  "placeholder": false,
  "week": 1,
  "gamesUsed": 544,
@@ -437,7 +437,13 @@
   "min_edge_spread": 0.02,
   "min_edge_total": 0.02,
   "bankroll": 1000.0,
-  "ot_length_drives": 3
+  "ot_length_drives": 3,
+  "late_game_drives": 2,
+  "freeze_margins": [
+   3,
+   6
+  ],
+  "leading_freeze": 0.7
  },
  "empiricalMargin": {
   "0": 0.5,
