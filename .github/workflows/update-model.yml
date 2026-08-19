@@ -1,0 +1,57 @@
+name: Refit model
+
+# Tuesday 13:00 UTC — after Monday Night Football has settled.
+on:
+  schedule:
+    - cron: "0 13 * * 2"
+  workflow_dispatch:
+    inputs:
+      week:
+        description: "Week number to stamp on the site"
+        required: false
+        default: "1"
+
+permissions:
+  contents: write
+
+jobs:
+  refit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install
+        run: pip install -r requirements.txt
+
+      # Pulls this season's results into data/games.csv.
+      # Remove this step if you'd rather update the CSV by hand.
+      - name: Fetch results
+        continue-on-error: true
+        run: python scripts/fetch_data.py --season 2026 --history 2
+
+      # The schedule doesn't change, so this is a no-op after the first run.
+      - name: Fetch schedule
+        continue-on-error: true
+        run: python scripts/fetch_schedule.py --season 2026
+
+      - name: Refit and export
+        run: |
+          python scripts/export_web.py \
+            --games data/games.csv \
+            --priors data/priors.csv \
+            --slate data/slate.csv \
+            --week "${{ github.event.inputs.week || '1' }}" \
+            --out docs/data/model.json
+
+      - name: Commit if anything changed
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/games.csv docs/data/model.json docs/data/schedule.json
+          git diff --quiet --cached || git commit -m "Refit model $(date -u +%Y-%m-%d)"
+          git push
