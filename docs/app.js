@@ -123,21 +123,31 @@ function driveRates(mu){
   return [td, fg];
 }
 
-function scoreDrives(n, td, fg, P){
-  let pts = 0;
-  for (let i = 0; i < n; i++){
-    const u = Math.random();
-    if (u < td){
-      pts += 6;
-      if (Math.random() < P.two_point_attempt_rate){
-        if (Math.random() < P.two_point_success) pts += 2;
-      } else if (Math.random() < P.xp_success) pts += 1;
-    } else if (u < td + fg){
-      pts += 3;
-    } else if (u < td + fg + P.base_safety_rate){
-      // conceded safety shows up as two points the other way; close enough at this scale
-    }
+/* One possession, for one team, across every simulation in the chunk at once.
+   pts/oppPts are running totals; drivesLeft tells the freeze rule how close
+   to the end of the game this is. A team already leading by a field-goal-sized
+   margin late stops trying to score and starts running the clock - that's
+   what locks a small lead in as the final margin instead of letting it keep
+   drifting, and it's why real NFL games land on 3 and 6 far more than a smooth
+   curve would predict. */
+function driveRound(pts, oppPts, td, fg, P, drivesLeft){
+  const margin = pts - oppPts;
+  const late = drivesLeft <= P.late_game_drives;
+  const freeze = late && P.freeze_margins.includes(margin);
+  const scale = freeze ? 1 - P.leading_freeze : 1;
+  const tdEff = td * scale, fgEff = fg * scale;
+
+  const u = Math.random();
+  if (u < tdEff){
+    pts += 6;
+    if (Math.random() < P.two_point_attempt_rate){
+      if (Math.random() < P.two_point_success) pts += 2;
+    } else if (Math.random() < P.xp_success) pts += 1;
+  } else if (u < tdEff + fgEff){
+    pts += 3;
   }
+  // a conceded safety (u < tdEff+fgEff+base_safety_rate) is rare enough at
+  // this scale to leave out of the late-game logic entirely
   return pts;
 }
 
@@ -150,13 +160,18 @@ function simulateChunk(from, to, muH, muA){
     // one shared environment shock, so the two scores move together:
     // weather, pace, whether it turns into a shootout
     const env = Math.exp(gauss() * P.env_sigma);
-    const drives = clamp(Math.round(P.drives_per_team + gauss() * P.drive_sd), 7, 16);
+    const drivesH = clamp(Math.round(P.drives_per_team + gauss() * P.drive_sd), 7, 16);
+    const drivesA = clamp(Math.round(P.drives_per_team + gauss() * P.drive_sd), 7, 16);
 
     const th = clamp(tdH * env, .01, .75), fh = clamp(fgH * Math.sqrt(env), .01, .45);
     const ta = clamp(tdA * env, .01, .75), fa = clamp(fgA * Math.sqrt(env), .01, .45);
 
-    let hp = scoreDrives(drives, th, fh, P);
-    let ap = scoreDrives(drives, ta, fa, P);
+    let hp = 0, ap = 0;
+    const maxD = Math.max(drivesH, drivesA);
+    for (let d = 0; d < maxD; d++){
+      if (d < drivesH) hp = driveRound(hp, ap, th, fh, P, drivesH - d);
+      if (d < drivesA) ap = driveRound(ap, hp, ta, fa, P, drivesA - d);
+    }
 
     // Overtime: both teams get a possession, then next score wins. A regular
     // season game may still end tied, which pushes the moneyline.
@@ -171,6 +186,7 @@ function simulateChunk(from, to, muH, muA){
     totals[i]  = hp + ap;
   }
 }
+
 
 /* ---------- pricing off the simulated distribution ---------- */
 function priceAll(){
