@@ -22,7 +22,8 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import nfl_model as M
 
 
-def build(games_csv=None, priors_csv=None, week=1, placeholder=False, slate_csv=None):
+def build(games_csv=None, priors_csv=None, week=1, placeholder=False, slate_csv=None,
+         target_season=None):
     df = M.make_demo_games(n_seasons=2) if placeholder else M.load_games(games_csv)
     long = M.to_long(df)
     priors = None
@@ -31,7 +32,7 @@ def build(games_csv=None, priors_csv=None, week=1, placeholder=False, slate_csv=
         p = pd.read_csv(priors_csv)
         priors = dict(zip(p["team"].str.upper(), p["prior_rating"].astype(float)))
 
-    r = M.fit_ratings(long, M.CFG, priors)
+    r = M.fit_ratings(long, M.CFG, priors, target_season=target_season)
     bm = M.fit_box_model(long, M.CFG)
 
     teams = {}
@@ -89,6 +90,11 @@ def main():
     ap.add_argument("--priors", default="data/priors.csv")
     ap.add_argument("--slate", default="data/slate.csv")
     ap.add_argument("--week", type=int, default=1)
+    ap.add_argument("--season", type=int, default=None,
+                    help="the season being predicted, e.g. 2026. Tells old data "
+                         "how stale it actually is - critical before that season's "
+                         "own games exist, since otherwise the most recent loaded "
+                         "season gets treated as fully current instead of one year old.")
     ap.add_argument("--placeholder", action="store_true")
     ap.add_argument("--out", default="docs/data/model.json")
     a = ap.parse_args()
@@ -97,7 +103,7 @@ def main():
     if use_placeholder and not a.placeholder:
         print(f"No {a.games} found - writing placeholder ratings instead.")
 
-    payload = build(a.games, a.priors, a.week, use_placeholder, a.slate)
+    payload = build(a.games, a.priors, a.week, use_placeholder, a.slate, a.season)
     os.makedirs(os.path.dirname(a.out), exist_ok=True)
     with open(a.out, "w") as f:
         json.dump(payload, f, indent=1)
