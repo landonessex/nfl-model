@@ -41,7 +41,7 @@ jobs:
 
       - name: Refit and export
         run: |
-                    python scripts/export_web.py \
+          python scripts/export_web.py \
             --games data/games.csv \
             --priors data/priors.csv \
             --slate data/slate.csv \
