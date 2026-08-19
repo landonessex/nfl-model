@@ -1,0 +1,5 @@
+numpy>=1.26
+pandas>=2.1
+openpyxl>=3.1
+# Only needed if you use scripts/fetch_data.py:
+nflreadpy>=0.1 ; python_version >= "3.10"
