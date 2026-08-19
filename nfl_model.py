@@ -272,18 +272,26 @@ def to_long(df: pd.DataFrame) -> pd.DataFrame:
     return long.sort_values(["season", "week", "game_id"]).reset_index(drop=True)
 
 
-def recency_weights(long: pd.DataFrame, cfg: Config = CFG) -> np.ndarray:
+def recency_weights(long: pd.DataFrame, cfg: Config = CFG,
+                    target_season: int | None = None) -> np.ndarray:
     """
     Exponential decay by how long ago the game was, then an extra haircut for
     anything from a previous season. A roster in September is not the roster
     that finished last January.
+
+    target_season lets the caller say which season is actually being predicted.
+    Left as None, it infers "current" from the most recent season in the data -
+    which is wrong specifically in the gap between seasons, when the newest
+    season has no games in it yet. Without an explicit target, last year's
+    results get treated as fully current instead of one full year stale, which
+    quietly drowns out any preseason prior.
     """
     order = long.groupby("team").cumcount(ascending=False)
     n_per_team = long.groupby("team")["game_id"].transform("size")
     games_back = (n_per_team - 1 - long.groupby("team").cumcount()).to_numpy()
     w = 0.5 ** (games_back / cfg.recency_halflife_games)
-    latest_season = long["season"].max()
-    seasons_back = (latest_season - long["season"]).to_numpy()
+    target = target_season if target_season is not None else long["season"].max()
+    seasons_back = (target - long["season"]).to_numpy()
     w = w * (cfg.carryover_weight ** np.clip(seasons_back, 0, 4))
     return w
 
@@ -401,8 +409,8 @@ def _solve_multiplicative(long: pd.DataFrame, w: np.ndarray, col_for: str,
 
 
 def fit_ratings(long: pd.DataFrame, cfg: Config = CFG,
-                priors: dict | None = None) -> Ratings:
-    w = recency_weights(long, cfg)
+                priors: dict | None = None, target_season: int | None = None) -> Ratings:
+    w = recency_weights(long, cfg, target_season)
 
     # Strip home field out of the observed points before rating anything,
     # otherwise teams that happened to play at home a lot look better than they are.
@@ -430,7 +438,14 @@ def fit_ratings(long: pd.DataFrame, cfg: Config = CFG,
         k = n / (n + 2 * cfg.shrink_k)
         give[t] = k * float(np.average(grp["giveaways"], weights=gw)) + (1 - k) * lg_to
         take[t] = k * float(np.average(grp["takeaways"], weights=gw)) + (1 - k) * lg_to
-        ngames[t] = len(grp)
+                # Recency-weighted, matching the shrink calc just above - NOT a flat
+        # len(grp). A raw count treats a 2024 game and a 2026 game as equally
+        # informative, which is exactly the assumption that made priors nearly
+        # invisible: two full stale seasons (~34 games) looked like "plenty of
+        # evidence" even though almost none of that evidence was about the
+        # season actually being predicted.
+        ngames[t] = n
+
 
     r = Ratings(att, dfn, patt, pdef, ratt, rdef, give, take,
                 {"ppg": lg_ppg, "pass": lg_pass, "rush": lg_rush, "to": lg_to}, ngames)
