@@ -338,6 +338,11 @@
    {
     "away": "PHI",
     "home": "JAX",
+    "neutral": 1
+   },
+   {
+    "away": "CHI",
+    "home": "GB",
     "neutral": 0
    },
    {
@@ -383,11 +388,6 @@
    {
     "away": "DET",
     "home": "ARI",
-    "neutral": 0
-   },
-   {
-    "away": "CHI",
-    "home": "GB",
     "neutral": 0
    },
    {
